@@ -1,17 +1,24 @@
-# advProg
-Repository for Advanced Programming Project
+# Eingesetzte Technologien
+- Pi-Sniff > Python-Skript (Scapy)
+- Pi-Schick > Python-Skript | Filebeat
+- Server-DB > Elasticsearch | MongoDB
+- Server-GUI > Kibana | Grafana | Selber basteln(?)
 
-Super Sache hier! ^v^
+# Python
+## Install requirements
+`pip install -r requirements.txt`
 
-Ja finde ich auch :3 
+## Run
+Skript muss mit `sudo` ausgeführt werden, um auf NIC zugreifen zu können.
 
-# Build image
-`docker build -t pinkfluffyunicorn:dev .`
+# Docker
+## Build image
+`docker build -t pinkfluffyunicorn:dev -f "$(pwd)/Kali.Dockerfile" .`
 
-# Start image
+## Start image
 `docker run --privileged -it --network host pinkfluffyunicorn:dev /bin/bash`
 
-# Aufräumen
+## Aufräumen
 Alle container zeigen
 
 `docker ps`
@@ -24,3 +31,6 @@ Bestimmte images löschen
 (hashes durch `docker images` suchen)
 
 `docker rmi imagehash1 imagehash2 imagehash3 ...`
+
+oder mit Namen
+`docker rmi pinkfluffyunicorn:dev`
