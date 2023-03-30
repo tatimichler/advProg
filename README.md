@@ -21,6 +21,6 @@ Alle images zeigen
 `docker images`
 
 Bestimmte images löschen 
-(hashes durch docker images suchen)
+(hashes durch `docker images` suchen)
 
-`docker rmi imagehash1 imagehash2 imagehash3`
+`docker rmi imagehash1 imagehash2 imagehash3 ...`
