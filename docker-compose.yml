@@ -1,0 +1,8 @@
+services:
+  sniffer:
+    image: "pinkfluffyunicorn:${TAG}"
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+    environment:
+      - IFACE=lo

@@ -5,4 +5,9 @@ FROM kalilinux/kali-rolling
 RUN apt -y update && DEBIAN_FRONTEND=noninteractive apt -y dist-upgrade && apt -y autoremove && apt clean
 
 # Install dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt -y install aircrack-ng tcpdump iproute2 pciutils kmod tshark
+RUN DEBIAN_FRONTEND=noninteractive apt -y install python3-pip
+RUN python3 -m pip install scapy
+
+# Setup env
+RUN mkdir /opt/sniff/
+COPY *.py /opt/sniff/

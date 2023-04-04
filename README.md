@@ -23,14 +23,28 @@ Alle container zeigen
 
 `docker ps`
 
-Alle images zeigen 
+Alle images zeigen
 
 `docker images`
 
-Bestimmte images löschen 
+Bestimmte images löschen
 (hashes durch `docker images` suchen)
 
 `docker rmi imagehash1 imagehash2 imagehash3 ...`
 
 oder mit Namen
 `docker rmi pinkfluffyunicorn:dev`
+
+# Docker Compose (wenn Image gebuildet wurde)
+
+## .env
+
+Beinhaltet Environment-Daten für das Docker-Compose-Skript.
+
+## Run
+
+`docker compose up -d`
+
+## Attach
+
+`docker attach <name>`
