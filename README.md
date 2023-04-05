@@ -1,8 +1,14 @@
 # Eingesetzte Technologien
 - Pi-Sniff > Python-Skript (Scapy)
-- Pi-Schick > Python-Skript | Filebeat
-- Server-DB > Elasticsearch | MongoDB
-- Server-GUI > Kibana | Grafana | Selber basteln(?)
+    - Schranke mit aircrack-ng ausloten
+- Server-DB > Elasticsearch
+- Server-GUI > Kibana
+
+# Dashboard
+- Pie-Chart
+- Heat-Map (MAC-Adresse Angreifer nach Zeit in bestimmter Granularität)
+- Bar-Chart (MAC-Adresse x # Packete absolut)
+- Bar-Chart (MAC-Adresse x # Packete normalisiert)
 
 # Python
 ## Install requirements
