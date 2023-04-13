@@ -11,3 +11,7 @@ RUN python3 -m pip install scapy
 # Setup env
 RUN mkdir /opt/sniff/
 COPY *.py /opt/sniff/
+RUN chmod +x /opt/sniff/*.py
+
+ENTRYPOINT /bin/bash -c "/usr/bin/python3 /opt/sniff/sniffsniff.py" & /bin/bash
+#ENTRYPOINT "/usr/bin/python3 /opt/sniff/sniffsniff.py && /bin/bash"
