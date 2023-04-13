@@ -1,8 +1,13 @@
 services:
   sniffer:
     image: "pinkfluffyunicorn:${TAG}"
-    stdin_open: true
-    tty: true
-    entrypoint: /bin/bash
+    container_name: "pinkfluff"
+    privileged: true
+    network_mode: host
     environment:
-      - IFACE=lo
+      - IFACE=wlan0
+  server:
+    image: "dancingrainbows:${TAG}"
+    container_name: "dancingrain"
+    privileged: true
+    network_mode: host

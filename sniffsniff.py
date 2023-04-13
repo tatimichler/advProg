@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import os
 from scapy.all import *
 from scapy.layers.dot11 import Dot11
 
@@ -15,4 +14,3 @@ def PacketHandler(packet):
                 file.write(str({"reciever" : packet.addr1, "source" : packet.addr2, "bssid" : packet.addr3}) + "\n")
 
 sniff(iface="wlan0", prn = PacketHandler, monitor = True, store = True)
-

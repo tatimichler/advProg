@@ -13,4 +13,4 @@ RUN mkdir /opt/sniff/
 COPY *.py /opt/sniff/
 RUN chmod +x /opt/sniff/*.py
 
-ENTRYPOINT /bin/bash -c "/usr/bin/python3 /opt/sniff/sniffsniff.py" & /bin/bash
+ENTRYPOINT /bin/bash -c "/usr/bin/python3 /opt/sniff/sniffsniff.py"
