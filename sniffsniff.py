@@ -18,9 +18,7 @@ class Sniffer():
 
     def write_packet_to_file(self, buffer_item: dict):
         with open("logedi.log", "a+") as outfile:
-            outfile.write(str({"timestamp": buffer_item["packet"].time, "reciever": buffer_item["packet"].addr1,
-                               "source": buffer_item["packet"].addr2, "bssid": buffer_item["packet"].addr3,
-                               "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
+            outfile.write(str({"timestamp": buffer_item["packet"].time, "reciever": buffer_item["packet"].addr1,"source": buffer_item["packet"].addr2, "bssid": buffer_item["packet"].addr3,"attack_uuid": buffer_item["attack_uuid"]}) + "\n")
 
     def check_for_threshold(self, recieved_packet):
         if recieved_packet.addr1.lower() in self.ap_list:
@@ -39,8 +37,7 @@ class Sniffer():
                 self.target_queue.pop(0)
                 self.target_queue.append({"packet": recieved_packet, "attack_uuid": self.attack_uuid})
                 self.write_packet_to_file(self.target_queue[-1])
-            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0][
-                "packet"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
+            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0]["packet"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
                 print("Test 4")
                 # create new attack ID + check if oldest packet has no attack ID -> add attack ID to all packets in buffer and write them to file else dequeue + enqueue + write new packet to file
                 # new attack
@@ -52,16 +49,14 @@ class Sniffer():
                 self.target_queue.pop(0)
                 self.target_queue.append({"packet": recieved_packet, "attack_uuid": self.attack_uuid})
                 self.write_packet_to_file({"packet": recieved_packet, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0][
-                "packet"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
+            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0]["packet"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
                 print("Test 5")
                 # set attack ID to none (no attack) + dequeue + enqueue
                 # no malicious packets anymore
                 self.attack_uuid = None
                 self.target_queue.pop(0)
                 self.target_queue.append({"packet": recieved_packet, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0][
-                "packet"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
+            elif self.target_queue[0] and recieved_packet.time - self.target_queue[0]["packet"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
                 print("Test 6")
                 # dequeue + enqueue
                 # no malicious packets
