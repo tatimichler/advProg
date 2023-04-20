@@ -16,9 +16,7 @@ def check_for_threshold(recieved_packet):
         else:
             target_list[recieved_packet.addr2]["timestamp"].append(datetime.now().second)
             target_list[recieved_packet.addr2]["packets"].append(recieved_packet)
-        if len(target_list[recieved_packet.addr2]["timestamp"]) > threshold and \
-                target_list[recieved_packet.addr2]["timestamp"][-1] - target_list[recieved_packet.addr2]["timestamp"][
-            0] <= 1:
+        if len(target_list[recieved_packet.addr2]["timestamp"]) > threshold and target_list[recieved_packet.addr2]["timestamp"][-1] - [recieved_packet.addr2]["timestamp"][0] <= 1:
             for packet_i in range(len(target_list[recieved_packet.addr2]["packets"])):
                 with open("logedi.log", "a+") as file:
                     file.write(str({"timestamp": target_list[recieved_packet.addr2]["timestamps"][packet_i],
