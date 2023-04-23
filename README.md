@@ -25,6 +25,10 @@
 ## Senden von Deauth-Packets
 `aireplay-ng -0 0 -a <AP-MAC> -c <Target(Client)-MAC> wlan0`
 
+# Log-File
+New-line getrennte JSON-Objekte mit der Form:
+`{'timestamp': 1682011162.6059976, 'reciever': 'aa:bb:cc:11:22:33', 'source': 'aa:bb:cc:11:22:34', 'bssid': 'aa:bb:cc:11:22:35', 'attack_uuid': UUID('75d183a8-7861-4c6e-9e03-37ddbb3156ca')}`
+
 # Python
 ## Install requirements
 `pip install -r requirements.txt`
