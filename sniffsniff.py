@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 
-from uuid import uuid4
+from uuid import \
+    uuid4
 
 from scapy.all import *
-from scapy.layers.dot11 import Dot11
+from scapy.layers.dot11 import \
+    Dot11
 
 
 class Sniffer():
-    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=1.0, ap_list=["d4:3f:cb:91:4c:46"],
-                 target_queue=[None], attack_uuid=None):
+    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=1.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
         """
         Constructor of deauth attack sniffer.
 
@@ -26,6 +27,7 @@ class Sniffer():
         self.ap_list = ap_list
         self.target_queue = target_queue * self.threshold
         self.attack_uuid = attack_uuid
+        self.log_path = log_path
 
     def write_frame_to_file(self, buffer_item: dict):
         """
@@ -37,7 +39,7 @@ class Sniffer():
         :param buffer_item: Item of frame buffer in form of {"frame" : received_frame, "attack_uuid" :
         currenct_attacK_uuid}
         """
-        with open("logedi.log", "a+") as outfile:
+        with open(self.log_path, "a+") as outfile:
             outfile.write(str({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1,
                                "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3,
                                "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
@@ -51,28 +53,22 @@ class Sniffer():
 
         :param recieved_frame: The current received frame.
         """
-        if recieved_frame.addr1.lower() in self.ap_list:
-            print("Test 1")
+        if recieved_frame.addr1.upper() in self.ap_list:
             if not self.target_queue[0]:  # if buffer not full
-                print("Test 2")
                 # dequeue + enqueue
                 # buffer not full (startup)
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0][
-                "frame"].time <= self.time_delta and self.attack_uuid:  # if buffer full AND time_delta met AND there is an ongoing attack
-                print("Test 3")
+            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time <= self.time_delta and self.attack_uuid:  # if buffer full AND time_delta met AND there is an ongoing attack
                 # dequeue + enqueue + write new frame to file
                 # still ongoing attack
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file(self.target_queue[-1])
-            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0][
-                "frame"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
-                print("Test 4")
+            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
                 # create new attack ID + check if oldest frame has no attack ID -> add attack ID to all frames in buffer and write them to file else dequeue + enqueue + write new frame to file
                 # new attack
-                self.attack_uuid = uuid4()
+                self.attack_uuid = str(uuid4())
                 for buffer_item in self.target_queue:
                     if not buffer_item["attack_uuid"]:
                         buffer_item["attack_uuid"] = self.attack_uuid
@@ -80,17 +76,13 @@ class Sniffer():
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0][
-                "frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
-                print("Test 5")
+            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
                 # set attack ID to none (no attack) + dequeue + enqueue
                 # no malicious frames anymore
                 self.attack_uuid = None
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0][
-                "frame"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
-                print("Test 6")
+            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
                 # dequeue + enqueue
                 # no malicious frames
                 self.target_queue.pop(0)
@@ -109,4 +101,4 @@ class Sniffer():
 
 if __name__ == "__main__":
     sniffler = Sniffer()
-    sniff(iface="wlan0", prn=sniffler.deauth_detector, monitor=True, store=True)
+    sniff(iface=sniffler.iface, prn=sniffler.deauth_detector, monitor=True, store=True)

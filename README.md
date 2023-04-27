@@ -41,7 +41,9 @@ Skript muss mit `sudo` ausgeführt werden, um auf NIC zugreifen zu können.
 `docker build -t pinkfluffyunicorn:dev -f "$(pwd)/Kali.Dockerfile" .`
 
 ## Start image
-`docker run --privileged -it --network host pinkfluffyunicorn:dev /bin/bash`
+Interface als Environment übergeben.
+
+`docker run --privileged -it --network host --env IFACE=wlan0 pinkfluffyunicorn:dev /bin/bash`
 
 ## Aufräumen
 Alle container zeigen
@@ -70,6 +72,6 @@ Beinhaltet Environment-Daten für das Docker-Compose-Skript.
 
 `docker compose up -d`
 
-## Attach
+## Open shell
 
-`docker attach <name>`
+`docker exec -it pinkfluff /bin/bash`

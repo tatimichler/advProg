@@ -4,10 +4,6 @@ services:
     container_name: "pinkfluff"
     privileged: true
     network_mode: host
+    tty: true
     environment:
       - IFACE=wlan0
-  server:
-    image: "dancingrainbows:${TAG}"
-    container_name: "dancingrain"
-    privileged: true
-    network_mode: host
