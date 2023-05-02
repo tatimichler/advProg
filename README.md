@@ -70,7 +70,7 @@ Beinhaltet Environment-Daten für das Docker-Compose-Skript.
 
 ## Run
 
-`docker compose up -d`
+`docker compose up`
 
 ## Open shell
 
