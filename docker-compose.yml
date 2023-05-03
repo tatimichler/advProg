@@ -1,6 +1,12 @@
 services:
   sniffer:
     image: "pinkfluffyunicorn:${TAG}"
+    build:
+      args:
+        TAG: dev
+        IFACE: wlan0
+      context: .
+      dockerfile: Unicorn.Dockerfile
     container_name: "pinkfluff"
     privileged: true
     network_mode: host

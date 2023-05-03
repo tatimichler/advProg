@@ -62,11 +62,15 @@ Bestimmte images löschen
 oder mit Namen
 `docker rmi pinkfluffyunicorn:dev`
 
-# Docker Compose (wenn Image gebuildet wurde)
+# Docker Compose
 
 ## .env
 
 Beinhaltet Environment-Daten für das Docker-Compose-Skript.
+
+## Build
+
+`docker compose build`
 
 ## Run
 
