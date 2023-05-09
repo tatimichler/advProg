@@ -1,11 +1,10 @@
 #!/usr/bin/python3
-
-from uuid import \
-    uuid4
-
+import \
+    os
+from uuid import uuid4
+from json import dumps
 from scapy.all import *
-from scapy.layers.dot11 import \
-    Dot11
+from scapy.layers.dot11 import Dot11
 
 
 class Sniffer():
@@ -29,6 +28,9 @@ class Sniffer():
         self.attack_uuid = attack_uuid
         self.log_path = log_path
 
+        os.system("airmon-ng check kill")
+        os.system(f"airmon-ng start {self.iface}")
+
     def write_frame_to_file(self, buffer_item: dict):
         """
         Write a given item of the frame buffer to the log file.
@@ -40,9 +42,7 @@ class Sniffer():
         currenct_attacK_uuid}
         """
         with open(self.log_path, "a+") as outfile:
-            outfile.write(str({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1,
-                               "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3,
-                               "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
+            outfile.write(dumps({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1, "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3, "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
 
     def check_for_threshold(self, recieved_frame):
         """
@@ -55,17 +55,20 @@ class Sniffer():
         """
         if recieved_frame.addr1.upper() in self.ap_list:
             if not self.target_queue[0]:  # if buffer not full
+                print("1")
                 # dequeue + enqueue
                 # buffer not full (startup)
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time <= self.time_delta and self.attack_uuid:  # if buffer full AND time_delta met AND there is an ongoing attack
+                print("2")
                 # dequeue + enqueue + write new frame to file
                 # still ongoing attack
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file(self.target_queue[-1])
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
+                print("3")
                 # create new attack ID + check if oldest frame has no attack ID -> add attack ID to all frames in buffer and write them to file else dequeue + enqueue + write new frame to file
                 # new attack
                 self.attack_uuid = str(uuid4())
@@ -77,12 +80,14 @@ class Sniffer():
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
+                print("4")
                 # set attack ID to none (no attack) + dequeue + enqueue
                 # no malicious frames anymore
                 self.attack_uuid = None
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
+                print("5")
                 # dequeue + enqueue
                 # no malicious frames
                 self.target_queue.pop(0)
@@ -95,6 +100,7 @@ class Sniffer():
         :param recieved_frame: The current received frame
         """
         if recieved_frame.haslayer(Dot11):
+            # print(f"{recieved_frame.summary()} {recieved_frame.type} {recieved_frame.subtype}")
             if recieved_frame.type == 0 and recieved_frame.subtype == 12:
                 self.check_for_threshold(recieved_frame)
 

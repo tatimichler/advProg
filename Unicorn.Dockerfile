@@ -5,7 +5,7 @@ FROM kalilinux/kali-rolling
 RUN apt -y update && DEBIAN_FRONTEND=noninteractive apt -y dist-upgrade && apt -y autoremove && apt clean
 
 # Install dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt -y install python3-pip iproute2
+RUN DEBIAN_FRONTEND=noninteractive apt -y install python3-pip iproute2 aircrack-ng pciutils procps kmod
 RUN python3 -m pip install scapy
 
 # Setup env
