@@ -1,14 +1,15 @@
 #!/usr/bin/python3
-import os
-from uuid import uuid4
-from json import dumps
+
+from uuid import \
+    uuid4
+
 from scapy.all import *
-from scapy.layers.dot11 import Dot11
-from dotenv import load_dotenv
+from scapy.layers.dot11 import \
+    Dot11
 
 
 class Sniffer():
-    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=1.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
         """
         Constructor of deauth attack sniffer.
 
@@ -28,9 +29,6 @@ class Sniffer():
         self.attack_uuid = attack_uuid
         self.log_path = log_path
 
-        os.system("airmon-ng check kill")
-        os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
-
     def write_frame_to_file(self, buffer_item: dict):
         """
         Write a given item of the frame buffer to the log file.
@@ -42,7 +40,9 @@ class Sniffer():
         currenct_attacK_uuid}
         """
         with open(self.log_path, "a+") as outfile:
-            outfile.write(dumps({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1, "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3, "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
+            outfile.write(str({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1,
+                               "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3,
+                               "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
 
     def check_for_threshold(self, recieved_frame):
         """
@@ -53,8 +53,7 @@ class Sniffer():
 
         :param recieved_frame: The current received frame.
         """
-        if recieved_frame.addr2.upper() in self.ap_list:
-            self.debug(recieved_frame)
+        if recieved_frame.addr1.upper() in self.ap_list:
             if not self.target_queue[0]:  # if buffer not full
                 print("1")
                 # dequeue + enqueue
@@ -69,9 +68,9 @@ class Sniffer():
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file(self.target_queue[-1])
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time <= self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta met AND there is no ongoing attack
-                print("3")
                 # create new attack ID + check if oldest frame has no attack ID -> add attack ID to all frames in buffer and write them to file else dequeue + enqueue + write new frame to file
                 # new attack
+                print("3")
                 self.attack_uuid = str(uuid4())
                 for buffer_item in self.target_queue:
                     if not buffer_item["attack_uuid"]:
@@ -81,16 +80,16 @@ class Sniffer():
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
-                print("4")
                 # set attack ID to none (no attack) + dequeue + enqueue
                 # no malicious frames anymore
+                print("4")
                 self.attack_uuid = None
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
             elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and not self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
-                print("5")
                 # dequeue + enqueue
                 # no malicious frames
+                print("5")
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
 
@@ -101,13 +100,11 @@ class Sniffer():
         :param recieved_frame: The current received frame
         """
         if recieved_frame.haslayer(Dot11):
+            print("received packet")
             if recieved_frame.type == 0 and recieved_frame.subtype == 12:
                 self.check_for_threshold(recieved_frame)
 
-    def debug(self, recieved_frame):
-        print(f"{recieved_frame.summary()} {recieved_frame.type} {recieved_frame.subtype} {recieved_frame.time}")
 
 if __name__ == "__main__":
     sniffler = Sniffer()
-    print(sniffler.iface)
     sniff(iface=sniffler.iface, prn=sniffler.deauth_detector, monitor=True, store=True)
