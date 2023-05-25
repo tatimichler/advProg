@@ -1,0 +1,6 @@
+- key: unicorn
+  title: unicorn
+  fields:
+    - name: timestamp
+      type: date_nanos
+      required: true
