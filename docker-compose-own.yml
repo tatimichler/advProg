@@ -13,6 +13,8 @@ services:
     privileged: true
     network_mode: host
     tty: true
+    volumes:
+      - certs:/usr/share/filebeat/config/certs
     environment:
       - IFACE=wlan0mon
       - IFACE_PRE=wlan0
@@ -43,6 +45,18 @@ services:
           "  - name: es01\n"\
           "    dns:\n"\
           "      - es01\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: kibana\n"\
+          "    dns:\n"\
+          "      - kibana\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: filebeat\n"\
+          "    dns:\n"\
+          "      - filebeat\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
@@ -108,37 +122,37 @@ services:
       timeout: 10s
       retries: 120
 
-  # kibana:
-  #   depends_on:
-  #     es01:
-  #       condition: service_healthy
-  #   image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
-  #   volumes:
-  #     - certs:/usr/share/kibana/config/certs
-  #     - kibanadata:/usr/share/kibana/data
-  #   ports:
-  #     - ${KIBANA_PORT}:5601
-  #   environment:
-  #     - SERVERNAME=kibana
-  #     - ELASTICSEARCH_HOSTS=https://es01:9200
-  #     - ELASTICSEARCH_USERNAME=kibana_system
-  #     - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
-  #     - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
-  #   mem_limit: ${MEM_LIMIT}
-  #   healthcheck:
-  #     test:
-  #       [
-  #         "CMD-SHELL",
-  #         "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
-  #       ]
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 120
+  kibana:
+    depends_on:
+      es01:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=https://es01:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+    mem_limit: ${MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
 volumes:
   certs:
     driver: local
   esdata01:
     driver: local
-  # kibanadata:
-  #   driver: local
+  kibanadata:
+    driver: local

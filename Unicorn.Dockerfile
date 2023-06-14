@@ -20,4 +20,7 @@ RUN chmod +x /opt/sniff/*.py
 COPY filebeat.yml /etc/filebeat/
 COPY fields.yml /usr/share/filebeat/
 
+# For debugging reasons
+COPY logedi.log /opt/sniff/
+
 ENTRYPOINT /bin/sh -c "/usr/bin/python3 /opt/sniff/sniffsniff.py"

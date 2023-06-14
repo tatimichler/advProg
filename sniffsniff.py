@@ -30,6 +30,7 @@ class Sniffer():
 
         os.system("airmon-ng check kill")
         os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
+        os.system("filebeat")
 
     def write_frame_to_file(self, buffer_item: dict):
         """
