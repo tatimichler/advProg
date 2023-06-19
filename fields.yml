@@ -4,3 +4,15 @@
     - name: timestamp
       type: date_nanos
       required: true
+    - name: reciever
+      type: text
+      required: true
+    - name: source
+      type: text
+      required: true
+    - name: bssid
+      type: text
+      required: true
+    - name: attack_uuid
+      type: text
+      required: true

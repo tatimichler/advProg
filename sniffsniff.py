@@ -30,7 +30,6 @@ class Sniffer():
 
         os.system("airmon-ng check kill")
         os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
-        os.system("filebeat")
 
     def write_frame_to_file(self, buffer_item: dict):
         """
@@ -43,7 +42,7 @@ class Sniffer():
         currenct_attacK_uuid}
         """
         with open(self.log_path, "a+") as outfile:
-            outfile.write(dumps({"timestamp": buffer_item["frame"].time, "reciever": buffer_item["frame"].addr1, "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3, "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
+            outfile.write(dumps({"timestamp": int(float("{:.3f}".format(buffer_item["frame"].time)) * 1000), "reciever": buffer_item["frame"].addr1, "source": buffer_item["frame"].addr2, "bssid": buffer_item["frame"].addr3, "attack_uuid": buffer_item["attack_uuid"]}) + "\n")
 
     def check_for_threshold(self, recieved_frame):
         """
