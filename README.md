@@ -81,11 +81,11 @@ Beinhaltet Environment-Daten für das Docker-Compose-Skript.
 `docker exec -it pinkfluff /bin/bash`
 
 ## Startprozedere
-Raspi hochfahren
-im Terminal: `sudo sysctl -w vm.max_map_count=262144`
-`sudo docker-compose up` im Verzeichnis advProg/advProg ausführen
-Terminal im Container öffnen mit `docker exec -it pinkfluff /bin/bash`
-(eventuell `filebeat setup -e` nochmal im Container-Terminal ausführen)
-Im Container-Terminal `sudo service filebeat start` ausführen
-Im Raspi-Browser: `localhost:5601` aufrufen, einloggen mit `elastic:password`
+-Raspi hochfahren
+-im Terminal: `sudo sysctl -w vm.max_map_count=262144`
+-`sudo docker-compose up` im Verzeichnis advProg/advProg ausführen
+-Terminal im Container öffnen mit `docker exec -it pinkfluff /bin/bash`
+-(eventuell `filebeat setup -e` nochmal im Container-Terminal ausführen)
+-Im Container-Terminal `sudo service filebeat start` ausführen
+-Im Raspi-Browser: `localhost:5601` aufrufen, einloggen mit `elastic:password`
 
