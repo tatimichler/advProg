@@ -5,14 +5,14 @@
       type: date_nanos
       required: true
     - name: reciever
-      type: text
+      type: keyword
       required: true
     - name: source
-      type: text
+      type: keyword
       required: true
     - name: bssid
-      type: text
+      type: keyword
       required: true
     - name: attack_uuid
-      type: text
+      type: keyword
       required: true
