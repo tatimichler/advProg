@@ -1,24 +1,6 @@
 version: "2.2"
 
 services:
-  sniffer:
-    image: "pinkfluffyunicorn:${TAG}"
-    build:
-      args:
-        TAG: dev
-        IFACE: wlan0mon
-      context: .
-      dockerfile: Unicorn.Dockerfile
-    container_name: "pinkfluff"
-    privileged: true
-    network_mode: host
-    tty: true
-    volumes:
-      - certs:/usr/share/filebeat/config/certs
-    environment:
-      - IFACE=wlan0mon
-      - IFACE_PRE=wlan0
-
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
@@ -148,6 +130,29 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+
+  sniffer:
+    depends_on:
+      kibana:
+        condition: service_healthy
+    image: "pinkfluffyunicorn:${TAG}"
+    build:
+      args:
+        TAG: dev
+        IFACE: wlan0
+      context: .
+      dockerfile: Unicorn.Dockerfile
+    container_name: "pinkfluff"
+    privileged: true
+    network_mode: host
+    tty: true
+    volumes:
+      - certs:/usr/share/filebeat/config/certs
+    environment:
+      - IFACE=wlan0mon
+      - IFACE_PRE=wlan0
+
+
 
 volumes:
   certs:

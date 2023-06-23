@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 
 
 class Sniffer():
-    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    #def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    def __init__(self, iface="wlan0mon", threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
         """
         Constructor of deauth attack sniffer.
 
@@ -29,7 +30,9 @@ class Sniffer():
         self.log_path = log_path
 
         os.system("airmon-ng check kill")
-        os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
+        #os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
+        os.system(f"airmon-ng start wlan0")
+        os.system(f"service filebeat start")
 
     def write_frame_to_file(self, buffer_item: dict):
         """
@@ -101,7 +104,9 @@ class Sniffer():
         :param recieved_frame: The current received frame
         """
         if recieved_frame.haslayer(Dot11):
+            #self.debug(recieved_frame)
             if recieved_frame.type == 0 and recieved_frame.subtype == 12:
+                self.debug(recieved_frame)
                 self.check_for_threshold(recieved_frame)
 
     def debug(self, recieved_frame):
