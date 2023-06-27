@@ -10,6 +10,11 @@
 - Bar-Chart (MAC-Adresse x # Packete absolut)
 - Bar-Chart (MAC-Adresse x # Packete normalisiert)
 
+# Persistent max_map_count
+`# echo "vm.max_map_count=262144" >> /etc/sysctl.d/99-sysctl.conf`
+
+`sudo sysctl --system`
+
 # Zugangsdaten
 ## Router
 - Web-UI: root:supersecurepassword

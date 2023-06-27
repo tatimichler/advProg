@@ -4,12 +4,10 @@ from uuid import uuid4
 from json import dumps
 from scapy.all import *
 from scapy.layers.dot11 import Dot11
-from dotenv import load_dotenv
-
 
 class Sniffer():
-    #def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
-    def __init__(self, iface="wlan0mon", threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    # def __init__(self, iface="wlan0mon", threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
         """
         Constructor of deauth attack sniffer.
 
@@ -30,8 +28,8 @@ class Sniffer():
         self.log_path = log_path
 
         os.system("airmon-ng check kill")
-        #os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
-        os.system(f"airmon-ng start wlan0")
+        os.system(f"airmon-ng start {os.getenv('IFACE_PRE')}")
+        # os.system(f"airmon-ng start wlan0")
         os.system(f"service filebeat start")
 
     def write_frame_to_file(self, buffer_item: dict):
@@ -83,7 +81,7 @@ class Sniffer():
                 self.target_queue.pop(0)
                 self.target_queue.append({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
                 self.write_frame_to_file({"frame": recieved_frame, "attack_uuid": self.attack_uuid})
-            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is no ongoing attack
+            elif self.target_queue[0] and recieved_frame.time - self.target_queue[0]["frame"].time > self.time_delta and self.attack_uuid:  # if buffer full AND time_delta NOT met AND there is an ongoing attack
                 print("4")
                 # set attack ID to none (no attack) + dequeue + enqueue
                 # no malicious frames anymore
