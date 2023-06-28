@@ -7,7 +7,7 @@ from scapy.layers.dot11 import Dot11
 
 class Sniffer():
     #def __init__(self, iface=os.getenv("IFACE"), threshold=250, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
-    def __init__(self, iface="wlan0", threshold=2, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F", "30:4B:07:ED:E3:8F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
+    def __init__(self, iface="wlan0", threshold=2, time_delta=30.0, ap_list=["B8:27:EB:AC:05:0F"],target_queue=[None], attack_uuid=None, log_path="/opt/sniff/logedi.log"):
         """
         Constructor of deauth attack sniffer.
 
@@ -55,7 +55,7 @@ class Sniffer():
 
         :param recieved_frame: The current received frame.
         """
-        if recieved_frame.addr2.upper() in self.ap_list:
+        if recieved_frame.addr1.upper() in self.ap_list:
             self.debug(recieved_frame)
             if not self.target_queue[0]:  # if buffer not full
                 print("1")
