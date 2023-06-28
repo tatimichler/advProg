@@ -151,7 +151,7 @@ services:
     environment:
       - IFACE=wlan0mon
       - IFACE_PRE=wlan0
-
+      - TARGET_MAC=B8:27:EB:AC:05:0F
 
 
 volumes:
