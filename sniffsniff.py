@@ -55,7 +55,7 @@ class Sniffer():
 
         :param recieved_frame: The current received frame.
         """
-        if recieved_frame.addr1.upper() in self.ap_list:
+        if recieved_frame.addr2.upper() in self.ap_list:
             self.debug(recieved_frame)
             if not self.target_queue[0]:  # if buffer not full
                 print("1")
